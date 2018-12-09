@@ -1,31 +1,29 @@
 % !TEX root = ../report.tex
 
 
-\section{In-vehicle Communication Networks and Security}
-\label{sec:communication-networks}
+\section{In-vehicle Communication Networks and Security}\label{sec:communication-networks}
 
 The different functions of a vehicle have very different requirements in
 performance and safety needs. Therefor the quality of service needed from the
-communication system varies (e.g. response time or bandwidth). Normally there
-are different functional domains which divide the in-car embeeded systems
-\cite{Navet2017}. There are the safety-critical domains "powertrain" (e.g.
-engine control) and "chassis" (e.g. steering) that need a deterministic
-real-time behavior. The functions of the "body" domain that controls for example
+communication system varies (e.g.\ response time or bandwidth). Normally there
+are different functional domains which divide the in-car embeeded systems~\cite{Navet2017}. There are the safety-critical domains ``powertrain'' (e.g.
+engine control) and ``chassis'' (e.g.\ steering) that need a deterministic
+real-time behavior. The functions of the ``body'' domain that controls for example
 dashboard, wipers, lights and windows need to exchange many informations of
-small size between each other. Other domains like "telematics" and "multimedia"
+small size between each other. Other domains like ``telematics'' and ``multimedia''
 have for example increased requirements in bandwidth and confidentiality.
 
 A multitude of different networks resulted out of this diversity of
 requirements. Therefor the Society of Automotive Engineers (SAE) created in 1994
 a classification for automotive communication protocols. This classification is
 based on data transmision speed and functionality. There were 4 different
-classes defined that are labeled class A to class D \cite{Ali2017}. Class A
+classes defined that are labeled class A to class D~\cite{Ali2017}. Class A
 networks have a speed lower than 10 kb/s. They are used for convenience features
 such as trunk release or electric mirror adjustment. Examples for Class A
-networks are LIN and TTP/A. Class B has a medium speed of 10 - 125 kb/s.
+networks are LIN and TTP/A. Class B has a medium speed of 10 to 125~kb/s.
 Networks of this classification are for general information between ECUs from
 for example sensors. Main representatives of this class are J1850 and low-speed
-CAN. High speed networks of class C have a speed between 125 kb/s and 1 Mb/s and
+CAN. High speed networks of class C have a speed between 125~kb/s and 1 Mb/s and
 are used for real time control like the power train or vehicle dynamics.
 High-speed CAN falls into this classification. Above the high speed
 classification C there is class D. Every communication protocol faster than 1
@@ -36,25 +34,53 @@ be used as gateways between sub-systems.
 
 In modern vehicles it is normal that there are many networks of different types.
 A BMW 7 series car from 2008 implements for example multiple LIN buses, a MOST
-and a FlexRay bus and additionally four CAN buses \cite{Kellermann2008}. All of
+and a FlexRay bus and additionally four CAN buses~\cite{Kellermann2008}. All of
 these networks are normally interconnected by gateways.
 
-TODO: Event-triggered versus Time-triggered
+In-vehicle networks play a crucial role in keeping the embedded systems in a
+safe state. Depending on the network it can be for example more or less
+difficult to identify failed nodes. Also some networks can meet hard real-time
+constraints and some cannot. In general there are two main paradigms in
+automotive communication, event-triggered and time-triggered communication
+\cite{Navet2017}. If the communication is consisting of asynchronous events, it
+follows the event-triggered paradigm. In such systems it is crucial to avoid
+conflicts while sending events from multiple sources in parallel.
+Event-triggered systems use the bandwidth effectively and are easy to extend
+with new network nodes. If network communication is synchronous, so every nodes
+sends at predefined time slot in a defined interval, then the communication
+follows the time-triggered paradigm. In general accessing a medium this way is
+called Time Division Multiple Access (TDMA). These systems are perfectly
+predictable but require to be statically defined up front. If there are new
+nodes introduced to the network the schedule has to be changed, so it is more
+complicated to extend these systems. Also the bandwidth is not used very
+efficiently and the response times are longer then in event-triggered systems.
+However missing messages can be identified rather easily. Because both paradigms
+have up and down sides. Normally both types of communications are needed for
+different features in an embedded system of a vehicle. Hence some networks like
+FlexRay provide both types of communication alongside each other.
+
+In the following sub-chapters I will describe the CAN network and give an
+overview about some of the most representative networks.
 
 \subsection{CAN Network}
 
+
+traffic shaping by using offsets for important messages~\cite{Navet2009}
+
 \subsection{Time-Triggered Networks}
 
-\subsection{Low-Cost Automotive Networks}
+\subsection{Other Networks}
 
-\subsection{Multimedia and Infotainment Networks}
+Low-Cost Automotive Networks
 
-\subsection{Automotive Ethernet}
+Multimedia and Infotainment Networks
+
+Automotive Ethernet
 
 \subsection{Security Measures}
 
 Controller Authentication, Encrypted Communication, Gateway
-Firewalls \cite{Lemke2006}
+Firewalls~\cite{Lemke2006}
 
 
 \section{LeiA: Lightweight Authentication Protocol for CAN}
