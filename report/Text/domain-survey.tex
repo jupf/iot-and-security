@@ -146,21 +146,93 @@ together~\cite{Navet2017}.
 The CAN protocol only defines the physical layer and the Data Link layer but
 there are higher level protocols like AUTOSAR which use the CAN protocol.
 
-\subsection{Time-Triggered Networks}
+\subsection{Other Representative Networks}
 
-\subsection{Other Networks}
+There are other priority bus systems besides CAN like J1850 and VAN but they are
+used less and less in favor of CAN~\cite{Navet2017}. In 2012 Robert Bosch GmbH
+introduced a new CAN version named CAN FD~\cite{Hartwich2012}. It distinguishes
+itself from standard CAN through higher data rates outside of the arbitration
+phase and the possibility for larger data fields. Another advantage is the easy
+migration from CAN to CAN FD because only the underlying communication layer has
+to be changed. The nodes using CAN can remain unchanged.
 
-Low-Cost Automotive Networks
+Event-triggered networks such as CAN are not suited for all use cases of IVNs.
+Event-triggered systems have lightweight protocols with dynamic arbitration per
+message and good use of bandwidth. However they are hard to verify formally in
+regard to e.g.\ bounded response times. If deterministic real time behavior is
+needed for e.g.\ X-by-Wire Systems, it is more suitable to choose a
+time-triggered network based on TDMA~(Time Division Multiple Access). They have
+protocols with static arbitration and need a clock synchronization. The two TDMA
+based networks suitable for serving as a gateway between IVNs or as a basis for
+safety critical applications in vehicles are FlexRay and
+TTEthernet~\cite{Navet2017}. 
 
-Multimedia and Infotainment Networks
+The FlexRay specification was initially created by the FlexRay consortium which
+was an alliance of car manufacturers, semiconductor and electronic systems
+manufacturers (established in 2000). FlexRay is a very flexible network aiming
+to provide advantages from the time-triggered and the event-driven world by
+integrating both schemes into one protocol. It is possible to scale the ratio
+between the time-triggered and the event-driven part of the protocol for
+adapting the network to the use case. Theoretically it is possible to use just
+one part of the protocol, the event-driven or time-triggered one.
 
-Automotive Ethernet
+Besides high speed and real time requirements, there are also parts of the
+in-vehicle networks with very few requirements in comparison. Their primary
+requirement is to have low costs. There are a multitude of such networks. The
+Local Interconnect Network (LIN) and TTP/A are two representatives of these
+networks whereupon TTP/A is not used in production vehicles and
+very similar to LIN~\cite{Navet2017}, so I will not go into detail about TTP/A. Low-cost
+automotive networks are normally used to control seats, doors, etc. They are not
+only cheap because of the simple communication protocol but also because of the
+low requirements in regard to micro-controller hardware. LIN is a master/slave
+network with a single master node polling all the slave nodes for information.
+The slave nodes are not allowed to initiate communication. Also LIN is able to
+send nodes to sleep and to wake them up which is very important in the
+automotive context. It works with just a single copper cable with a data rate up to 20Kbit/s.
+
+The third big IVN domain in vehicles is multimedia and infotainment networks.
+The de-facto standard in this domain is the Media Oriented System Transport
+(MOST)~\cite{Navet2017} developed by the MOST Coorporation~\cite{MOST2018} which
+is a consortium of car manufacturers and suppliers. MOST uses Polymer Optical
+Fiber or coaxial transmission as the physical layer. It integrates the
+possibility to transport standard ethernet frames. So it is possible to
+transport content and information for example from the web. The current MOST
+provides speed up to 150~Mbit/s. However the MOST Coorporation is working on a new version with speed up to 5~Gbit/s to be able to contend with automotive ethernet which is an upcoming competitor.
+
+Today, automotive ethernet is named as the future of in-vehicle networks.
+However it has still not oust its competitors. Though in 2022 it is likely that
+there are more ethernet ports inside of vehicles than anywhere
+else~\cite{Ixia2014}. There are two major representatives of automotive ethernet
+networks which are Ethernet Audio/Video Bridging (AVB) and TTEthernet. Ethernet
+AVB works with over-provisioning and prioritisation while the FlexRay competitor
+TTEthernet is a time-triggered switched ethernet protocol utilizing TDMA\@.
+TTEthernet provides mixed-criticality temporal requirements. It describes three
+types of traffic streams with upper bounds on latency and jitter for two of the
+three types. TTEthernet was designed for the most critical use-cases even
+including aeronautic applications. Ethernet AVB was designed for low-latency streaming services over ethernet by a consortium of car manufacturers and suppliers called AVnu Alliance~\cite{AVNU2018}.
+
+Automotive ethernet also needs some adjustments of the physical layer to work
+properly in the vehicular environment in regard to cost, power saving modes,
+robustness to environmental condition, etc. A physical ethernet layer developed
+by the OPEN Alliance SIG~\cite{SIG2018} for the vehicular environment is
+BroadR-Reach. It uses low cost unshielded copper wires. 
 
 \subsection{Security Measures}
 
-Controller Authentication, Encrypted Communication, Gateway
-Firewalls~\cite{Lemke2006}
+In-vehicle communication needs to be secured end-to-end so that no one else than the intended receiver can read the messages, no one is able to modify message content unnoticed and unauthorized parties are not able to participate in the communication~\cite{Lemke2006}. There are three elementary security practices for achieving security in IVN communication.
 
+\subsubsection{Controller Authentication}
+
+Every valid controller sending messages in the IVN needs to be authenticated. So that it is possible to distinguish messages from unauthorized parties and to be able to process these separately or just discard them. For this to work, every valid controller holds a signed certificate which consists of a controller identifier, a public key and the authorizations for this controller. The responsible gateway possesses a list of trusted Original Equipment Manufacturers (OEMs) public keys. The certificates of the controllers are signed by the respective private keys of the OEMs. This way the gateway can decide which controller has which authorizations and only allow trusted OEM controllers to participate.
+
+\subsubsection{Encrypted Communication}
+
+A fundamental part of secure IVN communication is the encryption of the network
+buses. Because of the specific hardware constraints in the automotive domain normally a mixture of asymmetric and symmetric encryption is used to meet the requirements on security and performance. Asymmetric encryption could be used to secure the acquisition of the symmetric keys. The symmetric encryption would then be used to secure all bus communication.
+
+\subsubsection{Gateway Firewalls}
+
+Gateways should restrict unauthorized messages to be send into (high safety-relevant) networks. This restriction can work per controller if there are message authentication codes or digital signatures included in each message. If it is technically not possible to include these into each message the only possibility is to grant all controllers of the subnet specific authorizations.
 
 \section{LeiA: Lightweight Authentication Protocol for CAN}
 \label{sec:leia}
