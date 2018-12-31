@@ -219,7 +219,7 @@ BroadR-Reach. It uses low cost unshielded copper wires.
 
 \subsection{Security Measures}
 
-In-vehicle communication needs to be secured end-to-end so that no one else than the intended receiver can read the messages, no one is able to modify message content unnoticed and unauthorized parties are not able to participate in the communication~\cite{Lemke2006}. There are three elementary security practices for achieving security in IVN communication.
+In-vehicle communication needs to be secured end-to-end so that no one else than the intended receiver can read the messages, no one is able to modify message content unnoticed and unauthorized parties are not able to participate in the communication~\cite{Lemke2006}. There are three elementary security practices for achieving security in IVN communication. The following report focuses on the first elementary practice: Controller Authentication.
 
 \subsubsection{Controller Authentication}
 
@@ -234,14 +234,18 @@ buses. Because of the specific hardware constraints in the automotive domain nor
 
 Gateways should restrict unauthorized messages to be send into (high safety-relevant) networks. This restriction can work per controller if there are message authentication codes or digital signatures included in each message. If it is technically not possible to include these into each message the only possibility is to grant all controllers of the subnet specific authorizations.
 
-\section{LeiA: Lightweight Authentication Protocol for CAN}
-\label{sec:leia}
+
+\section{Overview: AUTOSAR-compliant CAN Authentication Protocols}
+
+
+
+\subsection{LeiA: Lightweight Authentication Protocol for CAN}
+\label{subsec:leia}
 
 Overview of LeiA \cite{Radu2016}
 
-
-\section{VatiCAN: Vetted, authenticated CAN bus}
-\label{sec:vatican}
+\subsection{VatiCAN: Vetted, authenticated CAN bus}
+\label{subsec:vatican}
 
 Overview of vatiCAN \cite{Nurnberger2016}
 
