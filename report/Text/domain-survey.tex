@@ -180,15 +180,16 @@ Besides high speed and real time requirements, there are also parts of the
 in-vehicle networks with very few requirements in comparison. Their primary
 requirement is to have low costs. There are a multitude of such networks. The
 Local Interconnect Network (LIN) and TTP/A are two representatives of these
-networks whereupon TTP/A is not used in production vehicles and
-very similar to LIN~\cite{Navet2017}, so I will not go into detail about TTP/A. Low-cost
+networks whereupon TTP/A is not used in production vehicles and very similar to
+LIN~\cite{Navet2017}, so I will not go into detail about TTP/A. Low-cost
 automotive networks are normally used to control seats, doors, etc. They are not
 only cheap because of the simple communication protocol but also because of the
 low requirements in regard to micro-controller hardware. LIN is a master/slave
 network with a single master node polling all the slave nodes for information.
 The slave nodes are not allowed to initiate communication. Also LIN is able to
 send nodes to sleep and to wake them up which is very important in the
-automotive context. It works with just a single copper cable with a data rate up to 20Kbit/s.
+automotive context. It works with just a single copper cable with a data rate up
+to 20Kbit/s.
 
 The third big IVN domain in vehicles is multimedia and infotainment networks.
 The de-facto standard in this domain is the Media Oriented System Transport
@@ -197,7 +198,9 @@ is a consortium of car manufacturers and suppliers. MOST uses Polymer Optical
 Fiber or coaxial transmission as the physical layer. It integrates the
 possibility to transport standard ethernet frames. So it is possible to
 transport content and information for example from the web. The current MOST
-provides speed up to 150~Mbit/s. However the MOST Coorporation is working on a new version with speed up to 5~Gbit/s to be able to contend with automotive ethernet which is an upcoming competitor.
+provides speed up to 150~Mbit/s. However the MOST Coorporation is working on a
+new version with speed up to 5~Gbit/s to be able to contend with automotive
+ethernet which is an upcoming competitor.
 
 Today, automotive ethernet is named as the future of in-vehicle networks.
 However it has still not oust its competitors. Though in 2022 it is likely that
@@ -209,7 +212,9 @@ TTEthernet is a time-triggered switched ethernet protocol utilizing TDMA\@.
 TTEthernet provides mixed-criticality temporal requirements. It describes three
 types of traffic streams with upper bounds on latency and jitter for two of the
 three types. TTEthernet was designed for the most critical use-cases even
-including aeronautic applications. Ethernet AVB was designed for low-latency streaming services over ethernet by a consortium of car manufacturers and suppliers called AVnu Alliance~\cite{AVNU2018}.
+including aeronautic applications. Ethernet AVB was designed for low-latency
+streaming services over ethernet by a consortium of car manufacturers and
+suppliers called AVnu Alliance~\cite{AVNU2018}.
 
 Automotive ethernet also needs some adjustments of the physical layer to work
 properly in the vehicular environment in regard to cost, power saving modes,
@@ -219,20 +224,42 @@ BroadR-Reach. It uses low cost unshielded copper wires.
 
 \subsection{Security Measures}
 
-In-vehicle communication needs to be secured end-to-end so that no one else than the intended receiver can read the messages, no one is able to modify message content unnoticed and unauthorized parties are not able to participate in the communication~\cite{Lemke2006}. There are three elementary security practices for achieving security in IVN communication. The following report focuses on the first elementary practice: Controller Authentication.
+In-vehicle communication needs to be secured end-to-end so that no one else than
+the intended receiver can read the messages, no one is able to modify message
+content unnoticed and unauthorized parties are not able to participate in the
+communication~\cite{Lemke2006}. There are three elementary security practices
+for achieving security in IVN communication. The following report focuses on the
+first elementary practice: Controller Authentication.
 
 \subsubsection{Controller Authentication}
 
-Every valid controller sending messages in the IVN needs to be authenticated. So that it is possible to distinguish messages from unauthorized parties and to be able to process these separately or just discard them. For this to work, every valid controller holds a signed certificate which consists of a controller identifier, a public key and the authorizations for this controller. The responsible gateway possesses a list of trusted Original Equipment Manufacturers (OEMs) public keys. The certificates of the controllers are signed by the respective private keys of the OEMs. This way the gateway can decide which controller has which authorizations and only allow trusted OEM controllers to participate.
+Every valid controller sending messages in the IVN needs to be authenticated. So
+that it is possible to distinguish messages from unauthorized parties and to be
+able to process these separately or just discard them. For this to work, every
+valid controller holds a signed certificate which consists of a controller
+identifier, a public key and the authorizations for this controller. The
+responsible gateway possesses a list of trusted Original Equipment Manufacturers
+(OEMs) public keys. The certificates of the controllers are signed by the
+respective private keys of the OEMs. This way the gateway can decide which
+controller has which authorizations and only allow trusted OEM controllers to
+participate.
 
 \subsubsection{Encrypted Communication}
 
 A fundamental part of secure IVN communication is the encryption of the network
-buses. Because of the specific hardware constraints in the automotive domain normally a mixture of asymmetric and symmetric encryption is used to meet the requirements on security and performance. Asymmetric encryption could be used to secure the acquisition of the symmetric keys. The symmetric encryption would then be used to secure all bus communication.
+buses. Because of the specific hardware constraints in the automotive domain
+normally a mixture of asymmetric and symmetric encryption is used to meet the
+requirements on security and performance. Asymmetric encryption could be used to
+secure the acquisition of the symmetric keys. The symmetric encryption would
+then be used to secure all bus communication.
 
 \subsubsection{Gateway Firewalls}
 
-Gateways should restrict unauthorized messages to be send into (high safety-relevant) networks. This restriction can work per controller if there are message authentication codes or digital signatures included in each message. If it is technically not possible to include these into each message the only possibility is to grant all controllers of the subnet specific authorizations.
+Gateways should restrict unauthorized messages to be send into (high
+safety-relevant) networks. This restriction can work per controller if there are
+message authentication codes or digital signatures included in each message. If
+it is technically not possible to include these into each message the only
+possibility is to grant all controllers of the subnet specific authorizations.
 
 
 \section{Overview: AUTOSAR-compliant CAN Authentication Protocols} 
@@ -248,23 +275,36 @@ LeiA~\cite{Radu2016}
 \subsection{LeiA: Lightweight Authentication Protocol for CAN}
 \label{subsec:leia}
 
-The LeiA~\cite{Radu2016} protocol uses an unidirectional authentication using symmetric keys. Every participant in the network using the LeiA authentication needs to store information per relevant CAN identifier it either wants to send or receive information on:
+The LeiA~\cite{Radu2016} protocol uses an unidirectional authentication using
+symmetric keys. Every participant in the network using the LeiA authentication
+needs to store information per relevant CAN identifier it either wants to send
+or receive information on:
 
 \begin{itemize}
     \item CAN identifier
-    \item A long term 128-bit symmetric key used in generating the corresponding session key.
-    \item The epoch is a 56-bit counter which is increased every time the network is restarted or the message counter overflows. It is used in the generation of the session key.
-    \item A 16-bit message counter included in the data frame. It is used for MAC generation.
-    \item A 128-bit session key used for generating the MAC. It is regenerated when the epoch changes to limit the number of messages authenticated per session key.
+    \item A long term 128-bit symmetric key used in generating the corresponding
+    session key.
+    \item The epoch is a 56-bit counter which is increased every time the
+    network is restarted or the message counter overflows. It is used in the
+    generation of the session key.
+    \item A 16-bit message counter included in the data frame. It is used for
+    MAC generation.
+    \item A 128-bit session key used for generating the MAC. It is regenerated
+    when the epoch changes to limit the number of messages authenticated per
+    session key.
 \end{itemize}
 
-The authors of LeiA assume that the symmetric keys and identifiers are stored in tamper-resistant memory. So it should require physical access to the vehicle to update these keys.
+The authors of LeiA assume that the symmetric keys and identifiers are stored in
+tamper-resistant memory. So it should require physical access to the vehicle to
+update these keys.
 
-The session key generation is done at the start to initialise the system. So for every CAN identifier id such a session key is generated by the following steps:
+The session key generation is done at the start to initialise the system. So for
+every CAN identifier id such a session key is generated by the following steps:
 
 \begin{enumerate}
     \item increment current epoch value for identifier id by one
-    \item generate the session key by providing the epoch and symmetric key to the MAC generation algorithm.
+    \item generate the session key by providing the epoch and symmetric key to
+    the MAC generation algorithm.
     \item reset the message counter to zero.
 \end{enumerate}
 
@@ -276,26 +316,51 @@ The session key generation is done at the start to initialise the system. So for
 	\label{fig:leia_sending_msg}
 \end{figure}
 
-Before sending an authenticated message with LeiA, first the message counter has to be increased. Then the data and the MAC are sent over the corresponding CAN identifier. The receivers will increse its own message counter for the identifier and then verify the received MAC for the data. If this authentication is successful the data is processed (see Fig. \ref{fig:leia_sending_msg}).
+Before sending an authenticated message with LeiA, first the message counter has
+to be increased. Then the data and the MAC are sent over the corresponding CAN
+identifier. The receivers will increse its own message counter for the
+identifier and then verify the received MAC for the data. If this authentication
+is successful the data is processed (see Fig. \ref{fig:leia_sending_msg}).
 
 \begin{figure}[h]
     \centering
     \captionsetup{justification=centering}
 	\includegraphics[width=1\linewidth]{Figures/LeiA_resync.png}
-	\caption[]{Message resynchronisation after a failed message authentication between Sender s and Receiver r using LeiA.}
+    \caption[]{Message resynchronisation after a failed message authentication 
+    between Sender s and Receiver r using LeiA.}
 	\label{fig:leia_resync}
 \end{figure}
 
-If the authentication of a message fail a resynchronisation between sender and receiver is needed (see Fig. \ref{fig:leia_resync}). This means they do not use the same session key because the epoch is out of sync. In this case the receiver will send a AUTH\_FAIL message to signal the desynchronisation to the original sender of the message causing the authentication problem. The sender will then send out its current epoch value and a corresponding MAC generated from the epoch. The receiver will accept this new epoch and counter value from the sender if:
+If the authentication of a message fail a resynchronisation between sender and
+receiver is needed (see Fig. \ref{fig:leia_resync}). This means they do not use
+the same session key because the epoch is out of sync. In this case the receiver
+will send a AUTH\_FAIL message to signal the desynchronisation to the original
+sender of the message causing the authentication problem. The sender will then
+send out its current epoch value and a corresponding MAC generated from the
+epoch. The receiver will accept this new epoch and counter value from the sender
+if:
 
 \begin{enumerate}
-    \item The concatenated value of the received epoch and counter are higher than its own ($ epoch_{rec} || counter_{rec}~>~epoch_{own} || counter_{own} $). This check prevents replay attacks with older messages. 
-    \item The provided MAC for the new epoch is successfully verified with a new generated session key fitting this epoch.
+    \item The concatenated value of the received epoch and counter are higher
+    than its own ($ epoch_{rec} || counter_{rec}~>~epoch_{own} || counter_{own}
+    $). This check prevents replay attacks with older messages. 
+    \item The provided MAC for the new epoch is successfully verified with a new
+    generated session key fitting this epoch.
 \end{enumerate}
 
-Only if both conditions hold the new received value for epoch and counter are used to update the values of the out of sync receiver. After this the sender will resume normal sending of messages. 
+Only if both conditions hold the new received value for epoch and counter are
+used to update the values of the out of sync receiver. After this the sender
+will resume normal sending of messages. 
 
-In general there is a setup/initiation phase at the start. In this phase the epoch counter will be increased and the message counter will be reset to zero. Additionally the session keys will be generated from the long term symmetric keys and the corresponding epoch value. After the initiation the sending of messages can begin. Before each message the sender will update its message counter. The receiver will update its own counter independently and then verify the provided MAC. If there occurs an authentication error the resynchronization procedure will be triggered. The complete outline of the protocol is given in Figure \ref{fig:leia_outline}.
+In general there is a setup/initiation phase at the start. In this phase the
+epoch counter will be increased and the message counter will be reset to zero.
+Additionally the session keys will be generated from the long term symmetric
+keys and the corresponding epoch value. After the initiation the sending of
+messages can begin. Before each message the sender will update its message
+counter. The receiver will update its own counter independently and then verify
+the provided MAC. If there occurs an authentication error the resynchronization
+procedure will be triggered. The complete outline of the protocol is given in
+Figure~\ref{fig:leia_outline}.
 
 \begin{figure}[h]
     \centering
@@ -305,9 +370,92 @@ In general there is a setup/initiation phase at the start. In this phase the epo
 	\label{fig:leia_outline}
 \end{figure}
 
-CAN specific stuff in LeiA!
+To be able to use an authentication protocol in the in-vehicle network
+environment it needs to be lightweight. It can not introduce considerable
+latency or even contain too much code because the ECUs have very limited
+processing and memory capability. Therefor LeiA uses the MAC algorithm also for
+generating the session keys so the code can be reused at that point. The session
+keys are used for compensation of the moderate security provided by the
+lightweight cryptography. So only a maximum of \( 2^16 \) messages are secured
+by the same session key. After that the epoch has to change and a new session
+key is used to generate the MACs. In case of a restart of the system the epoch
+and thus the session key will change too. This restricts the use of a
+compromised session key.
 
-\subsection{VatiCAN: Vetted, authenticated CAN bus}
-\label{subsec:vatican}
+The LeiA protocol includes the counter in the extended identifier field of the
+CAN message which is normally used to extend the range of possible identifiers.
+The first two bits of this field are used to signal which kind of data is
+included in the payload field: data, MAC of data, epoch or MAC of an epoch.
+Every ECU using the LeiA protocol needs three communication channels. Therefor
+it needs three different identifiers. There is a data channel, an authentication
+channel and an authentication error channel. As seen in Figure
+\ref{fig:leia_sending_msg}, every time data is sent there are two messages sent
+out. One with the data and one with the MAC for the data. The data is sent over
+the data channel and the MAC is sent over the authentication channel. The
+AUTH\_FAIL messages (see Figure~\ref{fig:leia_resync}) are sent over the
+authentication error channel. So every ECU broadcasting messages in the network
+need to subscribe to all authentication error channels from its subscribers.
 
-Overview of vatiCAN \cite{Nurnberger2016}
+If the LeiA protocol is used like that the messages sent roughly double because
+for every data message a message with a corresponding MAC is sent out. However
+not all ECUs need the same level of security. So LeiA provides a scaling
+mechanism by not sending out a MAC for every data message. So for every ECU it
+is customizable for how many messages MACs are sent out. If there is a low
+security component there could be only an authentication message sent out for
+every tenth message.
+
+In \cite{Radu2016} the authors show that the LeiA protocol is secure against
+probabilistic polynomial time adversaries that can freely interact with protocol
+participants meaning they have only a negligible chance of successfully
+deceiving one of the participants. The protocol provides no security against
+fully compromised ECUs. These possess all the keys they use to broadcast and
+listen with normally. So a compromised node can listen and broadcast on all
+these channels and create valid MACs for them. This is an inherent problem of
+the used symmetric key cryptography. LeiA provides no security against denial of
+service (DoS) attacks. But it helps by not parsing data from messages with
+failed authentications.
+
+\subsection{VatiCAN: Vetted, authenticated CAN bus}\label{subsec:vatican}
+
+The Vetted, authenticated CAN bus protocol (VatiCAN)~\cite{Nurnberger2016} was
+designed to provide maximum security while providing full backwards
+compatibility to standard CAN\@. VatiCAN provides two core functionalities. The
+most important functionality is of course the authentication of messages and
+senders. Secondly, the protocol provides spoof detection for ECUs to detect
+spoofed messages with their own identifier. Additionally the VatiCAN protocol
+provides protection against replay attacks. Moreover it defines a changed CAN
+arbitration to provide spoof prevention.
+
+The authors of VatiCAN define six challenges that a CAN authentication protocol
+needs to face:
+
+\begin{enumerate}
+    \item[C1] Since CAN has hard real time constraints, security mechanism for
+    it can only add acceptable communication overhead not causing to
+    significantly increase latency and message collisions. 
+    \item[C2] Heavy-duty crypto can not be used since ECUs have very limited
+    computational power and memory available.
+    \item[C3] CAN messages have only a maximum payload of 8 bytes. Either the
+    messages fit into these 64-bit or the data is broken up into multiple
+    messages.
+    \item[C4] Every vehicle must have its own cryptographic keys to not be able
+    to extract working keys from another vehicle.
+    \item[C5] Non-critical ECUs should not be modified to be able to keep on
+    using existing hardware. So compatibility is needed with the standard CAN
+    protocol.
+    \item[C6] Authenticated CAN messages need to be protected against replay
+    attacks without introducing a global state since CAN is a stateless
+    protocol.
+\end{enumerate}
+
+VatiCAN's authors assumes that an attacker does not have physical access to the vehicle but compromised an ECU wirelessly. Furthermore they assume that the attacker did not compromise the real target ECU\@. VatiCAN provides no security against compromised ECUs sending authenticated messages with their own identifiers. So the attacker needs to impersonate another ECU with the help of the compromised one. She is also capable of reading all of the CAN messages and learn about the other ECUs identities.
+
+The message organization in VatiCAN uses separate messages for the authentication. The payload of the original data message is not modified in any way. For the authentication message the next identifier with lower priority is used (id plus one). This assures that both, the data and the authentication message have, have effectively the same priority with the authentication message not effecting the data message. This design was chosen with challenges C1 and C5 in mind. The receipt of data messages is not influenced by the protocol and unmodified ECUs can still read the data messages without any changes.
+
+For message authentication (concerning C2 and C3) a lightweight key-hashed message authentication code (HMAC) has been chosen. In particular the Keccak algorithm standardized as SHA-3 has been used since it was shown to be the fastest hash function on Atmel embedded microcontrollers. An input to the hash function of 128~bit size is chosen containing the 64~bit data payload plus the identifier for the corresponding data message and a nonce (explained below). So this HMAC is the payload of the authentication message which is sent additionally to the data message as described above.
+
+The symmetric keys used in the hashing function is chosen to be of 128~bit length and injected into the ECUs during assembly (C4). This leads to key updates of multiple ECUs when an ECU is replaced. Gladly ECUs can normally be upgraded through the on-board diagnostics port. So this is no problem and is preferable to a dynamic key-agreement procedure like a Diffie-Hellman key exchange because these are non-trivial to implement on an embedded microcontroller.
+
+To prevent replay attacks (C6) of any kind a nonce is used. These nonce values need to result in different values of HMACs when used in their generation. For every identifier a counter is used as the nonce which is incremented after every message sent. The receiver of an HMAC needs to know the counter value to verify the authenticity. Since the sender and its receivers can get out of sync due to lost messages for example a sychronisation mechanism is needed. This is accomplished by a global Nonce Generator. It periodically sends out new values which all ECUs then use as the next counter value for their identifier. So the nonce / counter values are no secret and the attacker can know them without problem. However without the secret symmetric keys for each identifier the nonce is useless because no valid HMACs can be computed without these keys. When two nodes get out of sync in regard to the nonce there is a ``deaf'' time where no message can be authenticated by the receiver until the next global nonce value is published by the Nonce Generator. The authors of VatiCAN propose an interval of 50~milliseconds for sending out global nonce values. This would be 1\% of the bandwidth of a 500~kbit/s CAN network. 
+
+An ECU is easily able to identify spoofed messages of its own identifier under the prerequisite that every ECU has its own identifier. They can simply look out for received messages with their own identifier. If then the CRC checksum is destroyed with dominant bits while it is sent the whole spoofed message will be dropped by every recipient. Sadly it is not possible to destroy the CRC checksum without modifying the CAN transceiver chip since the CRC is normally handled by the hardware. The authors propose to use such a modified transceiver chip for their added ECU the Nonce Generator because this component has to be added newly anyway for VatiCAN to work. So no attacker will be possible to impersonate the Nonce Generator and control the nonce values of the other ECUs.
