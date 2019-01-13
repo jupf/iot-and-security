@@ -3,7 +3,33 @@
 \section{VulCAN: Vehicular Component Authentication and Software Isolation}
 \label{sec:vulcan}
 
-In depth description/analysis of VulCAN \cite{VanBulck2017} based on Sancus 2.0
-\cite{Noorman}. Van Bulck et. al. "vulcanized" the LeiA and VatiCAN protocols to
-improve the protocol-level security guarantees and add several system-level
-security guarantees.
+The software-only protocols LeiA~\cite{Radu2016} and
+VatiCAN~\cite{Nurnberger2016} described in the two chapters above are very
+similar. They use pre-shared symmetric keys between sender and receiver.
+Additionally both use a monotonically increasing nonce protecting against replay
+attacks. They generate 64~bit MACs which is then sent in an extra message using
+the full payload length of this message. This provides compatibility to legacy
+components because the data messages are untouched.
+
+Van Bulck et~al. ``vulcanized'' these two approaches for message authentication.
+This adds multiple system-level security guarantees. To achieve this, VulCAN is
+built on top of Sancus~2.0~\cite{Noorman}. Sancus is a protected module
+architecture (PMA) that extends the embedded OpenMSP430 processor. It provides a
+hardware-only TCB extending the memory access logic and processor instruction
+set. Sancus uses a hardware-level program counter-based access control mechanism
+which secures the private data section of a software component. So only the
+responsible code section can access its corresponding private data section.
+Additionally this code section can only be entered through one specific entry
+point. With this functionalities it is possible to run multiple mutually
+distrusting software components in the same address space without being able to
+spy each others secrets. It is also possible to build secured driver protected
+modules (PMs). They can hold exclusive access to Memory-Mapped I/O devices.
+These driver PMs need to be written in assembly using only registers to store
+data because Sancus only provides one contiguous private data section. 
+
+Sancus also extends the processor with a cryptographic core. This enables
+hardware-level authenticated encryption, key derivation and key storage
+functionality. To enable remote / local attestation and secured communication
+Sancus employs a three level key hierarchy. The root level of this hierarchy
+consists of a hardware-level node master key. There exists exactly one of these
+for each embedded computing node that is only known to the owner of this node. Each independent vendor that installs software on this node is assigned a vendor identity. From vendor identity and master key a vendor key can be calculated. These vendor keys build the second level of the hierarchy. Lastly, the third level of the hierarchy consists of module keys for each PM running on the embedded node. The module keys are calculated from the vendor keys plus the corresponding module identity. This module identity contains all content from the code section plus the load addresses of both memory sections of the PM\@. Upon finishing to load a PM by unsecure software the Sancus-enabled processor will compute the module key and store it in a hardware-level secured memory area. The computed module key can only be used by the respective PM\@. Independent from this calculation the vendor who possesses also the vendor key and module identity can calculate the module key. So it is easy to check the integrity of the PM with a simple challenge by the vendor using the module key. This results in the ability to create a secured communication either using the module key or another in-memory key. Additionally the cryptography core provides hardware primitives for efficient cryptographic calculations which can be used by the PMs. Furthermore Sancus provides secure linking between two PMs on the same embedded node and comes with a modified C compiler automating PM creation and hiding low-level concerns.

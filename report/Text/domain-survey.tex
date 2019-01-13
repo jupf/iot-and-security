@@ -448,14 +448,100 @@ needs to face:
     protocol.
 \end{enumerate}
 
-VatiCAN's authors assumes that an attacker does not have physical access to the vehicle but compromised an ECU wirelessly. Furthermore they assume that the attacker did not compromise the real target ECU\@. VatiCAN provides no security against compromised ECUs sending authenticated messages with their own identifiers. So the attacker needs to impersonate another ECU with the help of the compromised one. She is also capable of reading all of the CAN messages and learn about the other ECUs identities.
+VatiCAN's authors assume that an attacker does not have physical access to the
+vehicle but compromised an ECU wirelessly. Furthermore they assume that the
+attacker did not compromise the real target ECU\@. VatiCAN provides no security
+against compromised ECUs sending authenticated messages with their own
+identifiers. So the attacker needs to impersonate another ECU with the help of
+the compromised one. She is also capable of reading all of the CAN messages and
+learn about the other ECUs identities.
 
-The message organization in VatiCAN uses separate messages for the authentication. The payload of the original data message is not modified in any way. For the authentication message the next identifier with lower priority is used (id plus one). This assures that both, the data and the authentication message have, have effectively the same priority with the authentication message not effecting the data message. This design was chosen with challenges C1 and C5 in mind. The receipt of data messages is not influenced by the protocol and unmodified ECUs can still read the data messages without any changes.
+The message organization in VatiCAN uses separate messages for the
+authentication. The payload of the original data message is not modified in any
+way. For the authentication message the next identifier with lower priority is
+used (id plus one). This assures that both, the data and the authentication
+message have effectively the same priority with the authentication message
+not effecting the data message. This design was chosen with challenges C1 and C5
+in mind. The receipt of data messages is not influenced by the protocol and
+unmodified ECUs can still read the data messages without any changes.
 
-For message authentication (concerning C2 and C3) a lightweight key-hashed message authentication code (HMAC) has been chosen. In particular the Keccak algorithm standardized as SHA-3 has been used since it was shown to be the fastest hash function on Atmel embedded microcontrollers. An input to the hash function of 128~bit size is chosen containing the 64~bit data payload plus the identifier for the corresponding data message and a nonce (explained below). So this HMAC is the payload of the authentication message which is sent additionally to the data message as described above.
+For message authentication (concerning C2 and C3) a lightweight key-hashed
+message authentication code (HMAC) has been chosen. In particular the Keccak
+algorithm standardized as SHA-3 has been used since it was shown to be the
+fastest hash function on Atmel embedded microcontrollers. An input to the hash
+function of 128~bit size is chosen containing the 64~bit data payload plus the
+identifier for the corresponding data message and a nonce (explained below). So
+this HMAC is the payload of the authentication message which is sent
+additionally to the data message as described above.
 
-The symmetric keys used in the hashing function is chosen to be of 128~bit length and injected into the ECUs during assembly (C4). This leads to key updates of multiple ECUs when an ECU is replaced. Gladly ECUs can normally be upgraded through the on-board diagnostics port. So this is no problem and is preferable to a dynamic key-agreement procedure like a Diffie-Hellman key exchange because these are non-trivial to implement on an embedded microcontroller.
+The symmetric keys used in the hashing function is chosen to be of 128~bit
+length and injected into the ECUs during assembly (C4). This leads to key
+updates of multiple ECUs when an ECU is replaced. Gladly ECUs can normally be
+upgraded through the on-board diagnostics port. So this is no problem and is
+preferable to a dynamic key-agreement procedure like a Diffie-Hellman key
+exchange because these are non-trivial to implement on an embedded
+microcontroller.
 
-To prevent replay attacks (C6) of any kind a nonce is used. These nonce values need to result in different values of HMACs when used in their generation. For every identifier a counter is used as the nonce which is incremented after every message sent. The receiver of an HMAC needs to know the counter value to verify the authenticity. Since the sender and its receivers can get out of sync due to lost messages for example a sychronisation mechanism is needed. This is accomplished by a global Nonce Generator. It periodically sends out new values which all ECUs then use as the next counter value for their identifier. So the nonce / counter values are no secret and the attacker can know them without problem. However without the secret symmetric keys for each identifier the nonce is useless because no valid HMACs can be computed without these keys. When two nodes get out of sync in regard to the nonce there is a ``deaf'' time where no message can be authenticated by the receiver until the next global nonce value is published by the Nonce Generator. The authors of VatiCAN propose an interval of 50~milliseconds for sending out global nonce values. This would be 1\% of the bandwidth of a 500~kbit/s CAN network. 
+To prevent replay attacks (C6) of any kind a nonce is used. These nonce values
+need to result in different values of HMACs when used in their generation. For
+every identifier a counter is used as the nonce which is incremented after every
+message sent. The receiver of an HMAC needs to know the counter value to verify
+the authenticity. Since the sender and its receivers can get out of sync due to
+lost messages for example a sychronisation mechanism is needed. This is
+accomplished by a global Nonce Generator. It periodically sends out new values
+which all ECUs then use as the next counter value for their identifier after
+using the current value. So the nonce / counter values are no secret and the
+attacker can know them without problem. However without the secret symmetric
+keys for each identifier the nonce is useless because no valid HMACs can be
+computed without these keys. When two nodes get out of sync in regard to the
+nonce there is a ``deaf'' time where no message can be authenticated by the
+receiver until the next global nonce value is published by the Nonce Generator.
+See Figure \ref{fig:vatican_deaf_time} for an overview. The authors of VatiCAN
+propose an interval of 50~milliseconds for sending out global nonce values. This
+would be 1\% of the bandwidth of a 500~kbit/s CAN network.
 
-An ECU is easily able to identify spoofed messages of its own identifier under the prerequisite that every ECU has its own identifier. They can simply look out for received messages with their own identifier. If then the CRC checksum is destroyed with dominant bits while it is sent the whole spoofed message will be dropped by every recipient. Sadly it is not possible to destroy the CRC checksum without modifying the CAN transceiver chip since the CRC is normally handled by the hardware. The authors propose to use such a modified transceiver chip for their added ECU the Nonce Generator because this component has to be added newly anyway for VatiCAN to work. So no attacker will be possible to impersonate the Nonce Generator and control the nonce values of the other ECUs.
+\begin{figure}[h]
+    \centering
+    \captionsetup{justification=centering}
+	\includegraphics[width=0.8\linewidth]{Figures/VatiCAN_deaf_time.png}
+	\caption[]{Nonce Generator sending out new nonce value}
+	\label{fig:vatican_deaf_time}
+\end{figure}
+
+Due to the data message arriving before the authentication message, the receiver can start calculating the HMAC of the received payload. So the sender and receiver can calculate the HMAC in parallel and when the HMAC calculated by the sender is received, the receiver can directly compare the HMAC with its own calculation (See Fig.~\ref{fig:vatican_sending_msg})
+
+\begin{figure}[h]
+    \centering
+    \captionsetup{justification=centering}
+	\includegraphics[width=0.8\linewidth]{Figures/VatiCAN_sending_msg.png}
+	\caption[]{Sending an authenticated Message using VatiCAN}
+	\label{fig:vatican_sending_msg}
+\end{figure}
+
+An ECU is easily able to identify spoofed messages of its own identifier under
+the prerequisite that every ECU has its own identifier. They can simply look out
+for received messages with their own identifier. If then the CRC checksum is
+destroyed with dominant bits while it is sent the whole spoofed message will be
+dropped by every recipient. Sadly it is not possible to destroy the CRC checksum
+without modifying the CAN transceiver chip since the CRC is normally handled by
+the hardware. The authors propose to use such a modified transceiver chip for
+their added ECU the Nonce Generator because this component has to be added newly
+anyway for VatiCAN to work. So no attacker will be possible to impersonate the
+Nonce Generator and control the nonce values of the other ECUs.
+
+The authors of VatiCAN made a Hardware-in-the-Loop-Test with an instrument
+cluster, accelerator and brake pedals, ATMega microcontrollers and CAN bus
+controller chips on top of a bench~\cite{Nurnberger2016}. They implemented
+VatiCAN as a library for the Arduino development environment for Atmel's AVR
+microcontrollers. They made a performance evaluation of their protocol and found
+out that receiving an authenticated message takes 3.3~ms longer than receiving a
+message without VatiCAN authentication. It was measured on an ATmega 8~bit
+microcontroller which is the low end of performance for embedded boards in
+vehicles. The 3.3~ms are not to be underrated. They have an impact of 0.9~m
+while driving with 100~km/h on a highway.
+
+Van Bulck et al.\ mention in \cite{VanBulck2017} that an
+advanced replay attack based on the generalized birthday problem (probability
+theory) is possible against the VatiCAN protocol. This is possible due to the
+frequent random nonce generation. After recording only 30 minutes of traffic it
+is possible to start replaying authenticated messages.
