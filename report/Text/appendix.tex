@@ -1,4 +1,39 @@
 % !TEX root = ../report.tex
 
+\newpage
+
 \section*{Appendix}
-%\newpage
+
+
+\subsection{Evaluation Measurements}\label{app:evaluation_measurements}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{@{}lrrr@{}}
+    \toprule
+    \textbf{Scenario}            & \multicolumn{1}{l}{\textbf{Cycles}} & \multicolumn{1}{l}{\textbf{Time}} & \multicolumn{1}{l}{\textbf{Overhead}} \\ \midrule
+    Legacy (standard ID)         & 8135                                & 0.41 ms                           & –                                     \\
+    Legacy (extended ID)         & 9620                                & 0.48 ms                           & 18\%                                  \\
+    vatiCAN (extrapolated\footnote{\label{footnote-label}Inferred from the observed Sancus+vatiCAN timings by replacing the hardware based MAC computation cycles with the reported Keccak \mbox{SHA-3} computation cycles.})      & 58948                               & 2.95 ms                           & 625\%                                 \\
+    Sancus+vatiCAN (unprotected) & 15570                               & 0.78 ms                           & 91\%                                  \\
+    Sancus+vatiCAN (protected)   & 16036                               & 0.80 ms                           & 97\%                                  \\
+    Sancus+LeiA (unprotected)    & 18770                               & 0.94 ms                           & 131\%                                 \\
+    Sancus+LeiA (protected)      & 19211                               & 0.96 ms                           & 136\%                                 \\ \bottomrule
+    \end{tabular}
+    \caption{Overhead to send an (authenticated) CAN message with/without Sancus encryption and software protection. After~\cite{VanBulck2017}}
+\end{table}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{@{}lrrr@{}}
+    \toprule
+    \textbf{Scenario}          & \multicolumn{1}{l}{\textbf{Cycles}} & \multicolumn{1}{l}{\textbf{Time}} & \multicolumn{1}{l}{\textbf{Overhead}} \\ \midrule
+    Legacy                     & 250                                 & 1.01 ms                           & -                                     \\
+    vatiCAN (extrapolated\textsuperscript{\ref{footnote-label}})    & 121992                              & 6.10 ms                           & 502\%                                 \\
+    Sancus+vatiCAN unprotected & 35236                               & 1.76 ms                           & 74\%                                  \\
+    Sancus+vatiCAN protected   & 36375                               & 1.82 ms                           & 80\%                                  \\
+    Sancus+LeiA unprotected    & 42929                               & 2.15 ms                           & 112\%                                 \\
+    Sancus+LeiA protected      & 43624                               & 2.18 ms                           & 115\%                                 \\ \bottomrule
+    \end{tabular}
+    \caption{Round-trip (ping-pong) time intervals. After~\cite{VanBulck2017}}
+\end{table}

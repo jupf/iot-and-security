@@ -275,7 +275,7 @@ microcontrollers. They made a performance evaluation of their protocol and found
 out that receiving an authenticated message takes 3.3~ms longer than receiving a
 message without VatiCAN authentication. It was measured on an ATmega 8~bit
 microcontroller which is the low end of performance for embedded boards in
-vehicles. The 3.3~ms are not to be underrated. They have an impact of 0.9~m
+vehicles. The 3.3~ms are not to be underrated. They have an impact of 0.09~m
 while driving with 100~km/h on a highway.
 
 Van Bulck et al.\ show in~\cite{VanBulck2017} that an advanced replay attack
@@ -575,4 +575,48 @@ contrast to a standard CAN driver.
 The VulCAN authors analyzed the security of their protocol~\cite{VanBulck2017} with the following conclusions.
 
 \smallskip
-The VulCAN protocol-level message authentication (P1) and replay attack protection (P3) is safe against adversaries that control the network but not the software on the ECUs. It is infeasible to brute force the session key (out of $2^{127}$ possibilities). Otherwise she would have to guess a correct combination of identifier, nonce and MAC\@. Due to the non applicability of the birthday paradox to this problem the attacker would have to guess the correct MAC (there are $2^{63}$ different MACs) which is also not reasonably executable in the limited time of the session key validity. 
+The VulCAN protocol-level message authentication (P1) and replay attack
+protection (P3) is safe against adversaries that control the network but not the
+software on the ECUs. It is infeasible to brute force the session key (out of
+$2^{127}$ possibilities). Otherwise she would have to guess a correct
+combination of identifier, nonce and MAC\@. Due to the non applicability of the
+birthday paradox to this problem the attacker would have to guess the correct
+MAC (there are $2^{63}$ different MACs) which is also not reasonably executable
+in the limited time of the session key validity. 
+
+\smallskip
+As a basis you ultimately have to trust the processor to be able to trust
+anything running on it. And the VulCAN authors trust their Sancus~\cite{Noorman}
+hardware. So their analysis regarding the system-level requirements (S2--S5) all
+depend on this trusted hardware. So this leads to trust in the loaded PMs and
+there communication. Through the reduction of the TCB to only these PMs and not
+even trusting the system software running on the ECUs it is well within reach to
+perform formal verification~\cite{Philippaerts2014} and secure
+compilation~\cite{Patrignani2015}. Through the Attestation Server it is only
+necessary to have once ECU with tamper-resistant persistent storage. The authors
+recommend to use higher-end trusted execution technology for this like ARM
+TrustZone~\cite{Alves2004} or Intel SGX~\cite{McKeen2013}. Sancus then
+guarantees that only PMs with valid integrity are able to decrypt the current
+session keys provided by the AS\@. The provisioning scheme of new keys by the
+vendor also relies on the AS having valid integrity because when no one knows
+its Secret Key no one is able to read by the vendor provided keys. Generally all
+this system-level requirements depend on the trust in the execution platform at
+its guarantees. The shielding of legacy ECUs depend on the protocol and
+system-level guarantees that VulCAN provides. If even the CAN driver for the
+gateways are executed as PMs there is no way of tampering with the gateway and
+no one is able to send unauthenticated messages to the legacy components.
+
+\subsection{Experimental Evaluation}
+
+The VulCAN authors implemented the vulcanized versions of VatiCAN and LeiA and tested them on a testbench with six FPGA synthesized with a Sancus-enabled OpenMSP430. These were connected with widely used MCP2515 CAN transceiver chips using a common bus with 500~kBit/s. They used the Sancus C Compiler to compile the source code.
+
+The TCB size of the vulcanized VatiCAN version was 147 and for LeiA 212 lines of code. The total binary size of the VatiCAN / LeiA library compiled as an unprotected application was 790 / 1818 bytes. Compiled as a PM it had 906 / 1948 bytes. This does not include 22 / 44 bytes per authenticated connection that is added to the VatiCAN / LeiA binary size.
+
+The authors made a performance evaluation and compared to the evaluation made by
+the vatiCAN authors. It is to mention, that the VatiCAN authors used 16~MHz
+ATmega 8-bit ECU while the MSP430 has 20~MHz and 16-bit. However, their results
+should be in the same order of magnitude. The VulCAN authors found their MAC
+generation (0.21ms) to be 11-times faster then the VatiCAN MAC generation
+(2.95ms). The vulcanized LeiA approach with the smaller nonces took only 0.20ms.
+The overall overhead for sending an authenticated message and measured
+round-trip times are listed in the Appendix.
