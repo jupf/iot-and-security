@@ -311,7 +311,7 @@ Sancus employs a three level key hierarchy. The root level of this hierarchy
 consists of a hardware-level node master key. There exists exactly one of these
 for each embedded computing node that is only known to the owner of this node.
 Each independent vendor that installs software on this node is assigned a vendor
-identity. From vendor identity and master key a vendor key can be calculated.
+identity. A vendor key can be calculated from vendor identity and master key.
 These vendor keys build the second level of the hierarchy. Lastly, the third
 level of the hierarchy consists of module keys for each PM running on the
 embedded node. The module keys are calculated from the vendor keys plus the
@@ -329,7 +329,7 @@ The module keys calculated by the Sancus hardware also make it possible to
 distrust the system software running on the embedded nodes. This reduces the TCB
 to the PMs running on the node which makes formal verifications much easier.
 Additionally the cryptography core provides hardware primitives for efficient
-cryptographic calculations which can be used by the PMs. Furthermore Sancus
+cryptographic calculations which can be used by the PMs. Furthermore, Sancus
 provides secure linking between two PMs on the same embedded node and comes with
 a modified C compiler automating PM creation and hiding low-level concerns.
 
@@ -353,15 +353,15 @@ vulcanized components. There is no other way to adversely interfere with them.
 With VulCAN it is not only possible to authenticate the messages sent by the
 software components its possible to authenticate the integrity of the software
 components themselves at runtime. This results in the ability to follow an
-authenticated trusted path an information in the system has taken. From
+authenticated trusted path that an information in the system has taken. From
 authenticated software component through the insecure network to the next
 authenticated component and so on. This provides a security that is strongly
 needed in the vehicular environment where wrong or modified information could
 have catastrophic consequences.
 
-\par{\textbf{Attacker Model.}} The attacker model in VulCAN is mostly similar to the
-models in LeiA and vatiCAN\@. But the attacker does not want to impersonate an
-ECU it wants to instead impersonate a protected component. It is assumed that
+\par{\textbf{Attacker Model.}} The attacker model in VulCAN is mostly similar to
+the models in LeiA and vatiCAN\@. But the attacker does not want to impersonate
+an ECU it wants to instead impersonate a protected module. It is assumed that
 the attacker gained wireless access to the CAN network through a compromised
 ECU\@. The component she wants to impersonate could be on the same ECU or a
 different one. So the attackers are given the following two capabilities.
@@ -372,11 +372,10 @@ to send own messages with arbitrary payload and identifier and additionally has
 the possibilities to modify or destroy packets while they pass by.
 
 \textit{Arbitrary Code Execution.} Formerly presented CAN authentication
-protocols always assumed the the ECU targeted by the attacker was not
-compromised itself. VulCAN extends the attacker model so that she is possible to
-execute and modify code on every ECU\@. She can even modify privileged system
-code. The only thing that is protected are the software components secured by
-Sancus.
+protocols always assumed the ECU targeted by the attacker was not compromised
+itself. VulCAN extends the attacker model so that she is possible to execute and
+modify code on every ECU\@. She can even modify privileged system code. The only
+thing that is protected are the software components secured by Sancus.
 
 \par{\textbf{Problem Statement.}} The authors of VulCAN not only describe the
 protocol requirements for message authentication on an unmodified CAN bus. They
@@ -406,7 +405,7 @@ system-level requirements:
 
 \begin{enumerate}
     \item[\textbf{S1:}] \textbf{Real-Time Compliance. } In the vehicular context
-    software hast strict real-time constraints with critical consequences when
+    software has strict real-time constraints with critical consequences when
     broken. While DoS attacks are out of scope, the normal operation should not
     violate these constraints.
     \item[\textbf{S2:}] \textbf{Component Isolation. } Trusted software
@@ -457,22 +456,21 @@ To use a new session key and reset the nonce to zero solves the problem of nonce
 initialization when a restart or nonce value overflow occurs. But in the case of
 message loss this is no reasonable solution. Due to high network load or just
 ECUs switching to standby it is very common that broadcasted messages are not
-received by all or any of the receivers. The sender will continue to increase
-the nonce while the receivers missing the messages can not know the current
-value of the nonce. So a nonce resynchronization is needed between sender and
-receiver. Actually, the nonce value is no secret and could be included into the
-data or authentication message. VulCAN makes no strict requirement how to
-resynchronize the nonce and leaves it the underlying authentication protocol. It
-would be possible to include the nonce into the data message when not all of the
-payload field is needed for the data. The authentication message payload is
-already filled with the MAC so there is no room for the nonce value there. LeiA
-includes the nonce value into the extended identifier field of the CAN frame as
-described in Chapter~\ref{sec:leia}. This could produce problems with legacy
-modules using the extended identifier field\@. vatiCAN uses a special component
-called the Nonce Generator to frequently send new global nonce values. The
-VulCAN authors showed in~\cite{VanBulck2017} that this approach is not secure
-against advanced replay attacks. This is described in detail in
-Chapter~\ref{sec:vatiCAN}.
+received by receivers. The sender will continue to increase the nonce while the
+receivers missing the messages can not know the current value of the nonce. So a
+nonce resynchronization is needed between sender and receiver. Actually, the
+nonce value is no secret and could be included into the data or authentication
+message. VulCAN makes no strict requirement how to resynchronize the nonce and
+leaves it the underlying authentication protocol. It would be possible to
+include the nonce into the data message when not all of the payload field is
+needed for the data. However, the authentication message payload is already filled with
+the MAC so there is no room for the nonce value there. LeiA includes the nonce
+value into the extended identifier field of the CAN frame as described in
+Chapter~\ref{sec:leia}. This could produce problems with legacy modules using
+the extended identifier field\@. vatiCAN uses a special component called the
+Nonce Generator to frequently send new global nonce values. The VulCAN authors
+showed in~\cite{VanBulck2017} that this approach is not secure against advanced
+replay attacks. Some more details are given in Chapter~\ref{sec:vatiCAN}.
 
 \subsection{Component Isolation and Authentication}\label{subsec:vulcan-component-isolation}
 
@@ -487,8 +485,8 @@ VulCAN uses Sancus' PMs to secure the authentication protocol and its private
 data. This reduces the TCB on the ECUs. It is not even necessary to trust the
 system management software on the ECUs like the privileged kernel. If a message
 is received it is possible to trace back the trusted path (trusted software
-components protected by PMs and authenticated messages) from where the data
-came. This reaches all the way back to sensor drivers which can also be secured
+components protected by PMs and authenticated messages) to where the data came
+from. This reaches all the way back to sensor drivers which can also be secured
 by Sancus' PMs. This reduction of the TCB makes verifications, experimental or
 formal, of the system much easier.
 
@@ -511,7 +509,7 @@ For attesting the integrity of all loaded PMs (S3) the VulCAN protocol designed
 an Attestation Server (AS) that conducts a remote attestation of all loaded PMs.
 To be able to do that the AS needs the Sancus module keys for every PM\@. With
 these it is easy to verify the integrity of each PM\@. A simple challenge
-attestation using the module key will suffice. The challenge should contain an
+attestation using the module key will suffice. The challenge should contain a
 nonce that monotonically increases to protect against replay attacks (P3). On
 top of that, the AS can additionally provision session keys to the PMs while
 attesting their integrity. This can be done by sending a random session key plus
@@ -589,8 +587,8 @@ TrustZone~\cite{Alves2004} or Intel SGX~\cite{McKeen2013}. Sancus then
 guarantees that only PMs with valid integrity are able to decrypt the current
 session keys provided by the AS\@. The provisioning scheme of new keys by the
 vendor also relies on the AS having valid integrity because when no one knows
-its Secret Key no one is able to read by the vendor provided keys. Generally all
-this system-level requirements depend on the trust in the execution platform at
+its Secret Key no one is able to read the keys provided by the vendor. Generally all
+this system-level requirements depend on the trust in the execution platform and
 its guarantees. The shielding of legacy ECUs depend on the protocol and
 system-level guarantees that VulCAN provides. If even the CAN driver for the
 gateways are executed as PMs there is no way of tampering with the gateway and
@@ -602,8 +600,8 @@ The VulCAN authors implemented the vulcanized versions of vatiCAN and LeiA and t
 
 The TCB size of the vulcanized vatiCAN version was 147 and for LeiA 212 lines of code. The total binary size of the vatiCAN / LeiA library compiled as an unprotected application was 790 / 1818 bytes. Compiled as a PM it had 906 / 1948 bytes. This does not include 22 / 44 bytes per authenticated connection that is added to the vatiCAN / LeiA binary size.
 
-The authors made a performance evaluation and compared to the evaluation made by
-the vatiCAN authors. It is to mention, that the vatiCAN authors used 16~MHz
+The authors made a performance evaluation and compared the results to the evaluation made by
+the vatiCAN authors. It is to mention, that the vatiCAN authors used a 16~MHz
 ATmega 8-bit ECU while the MSP430 has 20~MHz and 16-bit. However, their results
 should be in the same order of magnitude. The VulCAN authors found their MAC
 generation (0.21ms) to be 11-times faster then the vatiCAN MAC generation
