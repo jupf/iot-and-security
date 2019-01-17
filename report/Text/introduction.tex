@@ -6,9 +6,9 @@ The Internet of things (IoT) is a continuously growing network of commonplace
 devices. They can be physical like wireless sensors and smart phones or virtual
 like services. The IoT transforms how we interact with our environment. Today
 almost any electronic device can be bought as a smart version like microwaves,
-washing machines, light bulbs, door locks and many other "things". All these
+washing machines, light bulbs, door locks and many other ``things''. All these
 belong to the IoT network. The IoT has several application domains. It can be
-used personally or in enterprises \cite{Mahmoud2015}. The personal and social
+used personally or in enterprises~\cite{Mahmoud2015}. The personal and social
 application domain is for connecting people to their environment and to other
 people. The industries and enterprises domain enables different activities in
 and between organizations of for example the finance and banking sector. Also
@@ -20,10 +20,10 @@ lights.
 Ever since there were the first electronic systems to assist drivers in control
 of their cars there were Electronic Control Units (ECUs) included in these
 vehicles. ECUs consist of micro-controllers and sensors. Nowadays cars have not
-only normal Driver Assistance Systems like antilock breaking systems. They also
+only normal Driver Assistance Systems like anti-lock breaking systems. They also
 have Advanced Driver Assistance Systems (ADAS) which help people with
 safety-critical functionality like parking or emergency breaking. To realize all
-these functions a multitude of in-vehicle networks (IVNs) is needed to connect
+these functions, a multitude of in-vehicle networks (IVNs) is needed to connect
 all the ECUs and the sensors. These IVNs were originally closed off and had no
 connection to other networks. So they were designed with no security in mind
 whatsoever. Recently, cars have been connected to a multitude of networks like
@@ -32,30 +32,29 @@ whatsoever. Recently, cars have been connected to a multitude of networks like
 joining the IoT. The most used type of IVN today is still the Controller Area
 Network (CAN). It was introduced in 1983 by the Robert Bosh GmbH. Because in
 these days IVNs were closed of there were no security features included in the
-CAN protocol like encryption or message authentication \cite{Avatefipour2017}.
+CAN protocol like encryption or message authentication~\cite{Avatefipour2017}.
 This absence of inherent security features in the protocol led to successful
-demonstrations of security breaches \cite{Koscher2010}. It was possible to
+demonstrations of security breaches~\cite{Koscher2010}. It was possible to
 reprogram ECUs via physical and wireless connections. The car could even be
 monitored and controlled remotely. Since then there have been many automotive
-attack demonstrations \cite{Hoppe2011,Checkoway2011,Cheah2017}.
+attack demonstrations~\cite{Hoppe2011,Checkoway2011,Cheah2017}.
 
 This report focuses on recent CAN authentication research. Two initially
 proposed authentication protocols named LeiA and vatiCAN secure the CAN network
-against adversaries that do not control code execution on ECUs in the network
-\cite{Nurnberger2016,Radu2016}. Later these protocols were improved by VulCAN
-which is an efficient approach to implement secure distributed automotive
-control software on lightweight trusted computing platforms \cite{VanBulck2017}.
+against adversaries that do not control code execution on targeted ECUs in the
+network~\cite{Nurnberger2016,Radu2016}. Later these protocols were improved by
+VulCAN which is an efficient approach to implement secure distributed automotive
+control software on lightweight trusted computing platforms~\cite{VanBulck2017}.
 VulCAN adds another layer of security by relying on trusted hardware and a
 minimal software Trusted Computing Base (TCB). Additionally it was shown that
 VulCAN provides sufficient performance to be used in automotive real-time
 applications.
 
-In the following chapter \ref{sec:communication-networks} I will provide an
+In the following Chapter~\ref{sec:communication-networks} I will provide an
 overview of different IVNs like CAN, Time-Triggered Networks, Low-Cost
-Automotive Networks and more. Also I will introduce the general types of
-security measures in IVNs. Afterwards chapters \ref{sec:leia} and
-\ref{sec:vatican} will explain LeiA and vatiCAN and how each of them work in
-general. Chapter \ref{sec:vulcan} will talk in depth about VulCAN. I will
-explain how it achieves improvements over LeiA and vatiCAN using Sancus 2.0.
-Finally there will be a discussion in chapter \ref{sec:discussion} connecting security in IVNs to security in
-the general IoT sector and the world wide web.
+Automotive Networks and more. General types of security measures in IVNs will be
+introduced. Chapters~\ref{sec:leia} and~\ref{sec:vatiCAN} will explain LeiA
+and vatiCAN and how each of them work in general. Chapter~\ref{sec:vulcan} will
+talk in depth about VulCAN\@. I will explain how it achieves improvements over
+LeiA and vatiCAN using Sancus 2.0. Finally there will be a discussion in
+Chapter~\ref{sec:discussion} setting IVN security into a bigger picture.

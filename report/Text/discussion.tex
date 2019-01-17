@@ -1,15 +1,14 @@
 % !TEX root = ../report.tex
 
-\section{Discussion}
-\label{sec:discussion}
+\section{Discussion}\label{sec:discussion}
 
 The CAN network standard is now 25 years old. Although there are a lot of
-published demonstations showing the risks that utilise unsecured
-CAN~\cite{Koscher2010,Hoppe2011,Checkoway2011,Cheah2017}, no real change has
+published demonstrations these last years showing the risks using unsecured
+CAN~\cite{Koscher2010,Hoppe2011,Checkoway2011,Cheah2017}, no actual change has
 happened till today. The AUTOSAR standard included message authentication in
 their standards already a few years ago but still, there are only three
 published protocols that implement these standards. The software-only approaches
-of VatiCAN and LeiA fulfill the most needed authentication protocol guarantees
+of vatiCAN and LeiA fulfill the most needed authentication protocol guarantees
 while providing backwards compatibility to legacy CAN components. However, both
 these protocols assume that from the attacker targeted ECUs are not compromised.
 In presence of demonstrations showing a wide range of attacks on automotive
@@ -26,7 +25,8 @@ this comes at a higher price in comparison to software-only approaches but how
 should these protect themselves against arbitrary code execution on an ECU\@?
 They just do not provide enough security guarantees to seem trustworthy.
 Additionally VulCANs possibility to shield legacy ECUs provides a good way to
-transition in the direction of a secure in-vehicle network which would be impossible for a software-only approach.
+transition in the direction of a secure in-vehicle network which would be
+impossible for a software-only approach.
 
 The general Internet of Things sector is growing rapidly. There are up to 26
 billion IoT devices expected in 2020~\cite{gartner13}. And according
@@ -37,9 +37,26 @@ communication and authentication is a well researched topic today, the IoT
 domain has very specific requirements which prohibit the use of these well
 defined and tested standards. IoT devices uses different network stacks and
 often they have very few computing power. This makes it impossible to just use
-standards like TLS~\cite{TODO}. Although the VulCAN protocol mechanisms are part
+standards like TLS~\cite{Dierks2008}. Although the VulCAN protocol mechanisms are part
 of the TLS standard in similar ways. TLS also uses symmetric cryptography to
 calculate MACs and asymmetric crypto, like the AS, to authenticate participants.
 
-However, the real problem is not designing secure embedded devices (although this is already hard), but making all these billion devices which are already sold secure. There are so many insecure IoT devices sold already that it is near impossible to secure all of them, even if it were wide-spread topic spoken about in the world and all the vendors putting much effort into it. Sadly this is not the case and closely resembles the vehicle domain. There are so many vehicles used in the world and with all the demonstrated security risks in mind, there is no real public conversation going on about the security of these vehicles. If we look at recent events that happened involving german car manufacturers (diesel scandal~\cite{spiegel17}), we can guess the willingness of the car manufacturers to make upgrades to already sold cars of any kind. In germany these car manufacturers did not decide to fix these cars they sold under wrong specifications. So why would they be willing to fix security issues in already sold cars nobody is talking about?
+However, the real problem is not designing secure embedded devices (although
+this is already hard), but making all these billion devices which are already
+sold secure. There are so many insecure IoT devices sold already that it is near
+impossible to secure all of them, even if it were a wide-spread topic in the
+world and if all vendors were putting much effort into it. It would still depend
+a lot of the user of these devices. Because automatic updates are rarely seen on
+embedded devices~\cite{Viega2012}. The vehicle domain has very similar problems as the
+rest of the IoT sector. There are so many vehicles used in the world and with
+all the demonstrated security risks in mind, there is no real public
+conversation going on about the security of these vehicles. If we look at recent
+events that happened involving german car manufacturers (diesel
+scandal~\cite{spiegel17}), we can guess the willingness of the car manufacturers
+to make upgrades to already sold cars of any kind. In germany these car
+manufacturers did not decide to fix these cars they sold under wrong
+specifications. So why would they be willing to fix security issues in already
+sold cars nobody is talking about? It seems like we will not have a realistic
+chance to secure all these devices / vehicles until new ones are properly
+secured and old ones reached their end of life.
 

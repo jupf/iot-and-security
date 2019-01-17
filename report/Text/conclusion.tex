@@ -2,4 +2,16 @@
 
 \section{Conclusions}
 
-This report 
+This report gave a basic introduction about in-vehicle networks and then
+detailed the currently published AUTOSAR-compliant message authentication
+protocols. The software-only protocols LeiA and vatiCAN secure against attackers
+with full access to the CAN network but do not have arbitrary code execution on
+all ECUs. They assume that the targeted ECUs are not compromised. The third
+published message authentication protocol named VulCAN enhances other protocols
+like LeiA and vatiCAN to render arbitrary code execution on every ECU
+unperilous. To achieve this VulCAN uses Sancus a trusted execution technology
+with low-cost embedded devices. It enables runtime attestation and
+authentication of the software components through a hardware-only TCB\@ without
+breaking critical real time constraints of the vehicle domain. Additionally
+VulCAN provides a way to shield legacy devices without modifying them to help
+with the transition towards a secured CAN network. 

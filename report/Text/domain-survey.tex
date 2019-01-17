@@ -6,11 +6,11 @@
 The different functions of a vehicle have very different requirements in
 performance and safety needs. Therefor the quality of service needed from the
 communication system varies (e.g.\ response time or bandwidth). Normally there
-are different functional domains which divide the in-car embeeded
+are different functional domains which divide the in-car embedded
 systems~\cite{Navet2017}. There are the safety-critical domains ``powertrain''
-(e.g. engine control) and ``chassis'' (e.g.\ steering) that need a deterministic
+(e.g.\ engine control) and ``chassis'' (e.g.\ steering) that need a deterministic
 real-time behavior. The functions of the ``body'' domain that controls for
-example dashboard, wipers, lights and windows need to exchange many informations
+example dashboard, wipers, lights and windows need to exchange many information
 of small size between each other. Other domains like ``telematics'' and
 ``multimedia'' have for example increased requirements in bandwidth and
 confidentiality.
@@ -18,7 +18,7 @@ confidentiality.
 A multitude of different networks resulted out of this diversity of
 requirements. Therefor the Society of Automotive Engineers (SAE) created in 1994
 a classification for automotive communication protocols. This classification is
-based on data transmision speed and functionality. There were 4 different
+based on data transmission speed and functionality. There were 4 different
 classes defined that are labeled class A to class D~\cite{Ali2017}. Class A
 networks have a speed lower than 10 kb/s. They are used for convenience features
 such as trunk release or electric mirror adjustment. Examples for Class A
@@ -43,20 +43,20 @@ In-vehicle networks play a crucial role in keeping the embedded systems in a
 safe state. Depending on the network it can be for example more or less
 difficult to identify failed nodes. Also some networks can meet hard real-time
 constraints and some cannot. In general there are two main paradigms in
-automotive communication, event-triggered and time-triggered communication
-\cite{Navet2017}. If the communication is consisting of asynchronous events, it
-follows the event-triggered paradigm. In such systems it is crucial to avoid
-conflicts while sending events from multiple sources in parallel.
-Event-triggered systems use the bandwidth effectively and are easy to extend
-with new network nodes. If network communication is synchronous, so every nodes
-sends at predefined time slot in a defined interval, then the communication
-follows the time-triggered paradigm. In general accessing a medium this way is
-called Time Division Multiple Access (TDMA). These systems are perfectly
-predictable but require to be statically defined up front. If there are new
-nodes introduced to the network the schedule has to be changed, so it is more
-complicated to extend these systems. Also the bandwidth is not used very
+automotive communication, event-triggered and time-triggered
+communication~\cite{Navet2017}. If the communication is consisting of
+asynchronous events, it follows the event-triggered paradigm. In such systems it
+is crucial to avoid conflicts while sending events from multiple sources in
+parallel. Event-triggered systems use the bandwidth effectively and are easy to
+extend with new network nodes. If network communication is synchronous, so every
+nodes sends at predefined time slot in a defined interval, then the
+communication follows the time-triggered paradigm. In general accessing a medium
+this way is called Time Division Multiple Access (TDMA). These systems are
+perfectly predictable but require to be statically defined up front. If there
+are new nodes introduced to the network the schedule has to be changed, so it is
+more complicated to extend these systems. Also the bandwidth is not used very
 efficiently and the response times are longer then in event-triggered systems.
-However missing messages can be identified rather easily. Because both paradigms
+However, missing messages can be identified rather easily. Because both paradigms
 have up and down sides. Normally both types of communications are needed for
 different features in an embedded system of a vehicle. Hence some networks like
 FlexRay provide both types of communication alongside each other.
@@ -68,7 +68,7 @@ overview about some of the most representative other networks.
 
 The CAN network was introduced in 1983 by the Robert Bosh GmbH~\cite{Navet2017}.
 It uses a twisted pair of copper wires as a bus between the nodes. Depending on
-the speed used it is either classified and used as a SAE class B or class C
+the speed used, it is either classified and used as a SAE class B or class C
 network. Aside the used speed there are two versions of CAN\@. Version 2.0A and
 2.0B which differ in the length of the identifier used when sending data. CAN
 uses a Non-Return-to-Zero bit representation with a bit stuffing of 5~bits.
@@ -102,10 +102,8 @@ received it. At the end of the frame is the End Of Frame field followed by the
 intermission bits. The intermission bits are the minimal number of bits after
 which it is allowed to send a new data frame.
 
-TODO\@: image of data frame composition
-
 On an idle CAN bus every node can send a data frame at any time. If multiple
-nodes want to send a frame simultaneously and collide the priority based
+nodes want to send a frame simultaneously and collide, the priority based
 arbitration decides which node is allowed to send data. This works with the help
 of the physical layer implementing the ``AND'' scheme. So while sending
 identifier and RTR bit the nodes are observing the bus level. If the node
@@ -115,10 +113,10 @@ is sending at the same moment which has priority. The node which stopped sending
 needs to wait until the bus becomes idle again and then tries to send the data
 frame again.
 
-For the priority-based arbitration to work the signal of a bit needs to
+For the priority-based arbitration to work, the signal of a bit needs to
 propagate to all other nodes and back before sending the next bit. So the
 physical length of the bus restricts the speed with which data can be send. On a
-40 meter bus a maximum speed of 1 Mbit/s is possible while only 250 Kbit/s can
+40 meter bus a maximum speed of 1~MBit/s is possible while only 250~KBit/s can
 be achieved over a 250 meter long bus~\cite{Navet2017}. This restriction has
 lead to optimizations by the car manufacturers using ``traffic shaping''. One
 example would be to use an offset for important periodic messages so they will
@@ -189,17 +187,17 @@ network with a single master node polling all the slave nodes for information.
 The slave nodes are not allowed to initiate communication. Also LIN is able to
 send nodes to sleep and to wake them up which is very important in the
 automotive context. It works with just a single copper cable with a data rate up
-to 20Kbit/s.
+to 20~KBit/s.
 
 The third big IVN domain in vehicles is multimedia and infotainment networks.
 The de-facto standard in this domain is the Media Oriented System Transport
-(MOST)~\cite{Navet2017} developed by the MOST Coorporation~\cite{MOST2018} which
+(MOST)~\cite{Navet2017} developed by the MOST Corporation~\cite{MOST2018} which
 is a consortium of car manufacturers and suppliers. MOST uses Polymer Optical
 Fiber or coaxial transmission as the physical layer. It integrates the
 possibility to transport standard ethernet frames. So it is possible to
 transport content and information for example from the web. The current MOST
-provides speed up to 150~Mbit/s. However the MOST Coorporation is working on a
-new version with speed up to 5~Gbit/s to be able to contend with automotive
+provides speed up to 150~MBit/s. However the MOST Corporation is working on a
+new version with speed up to 5~GBit/s to be able to contend with automotive
 ethernet which is an upcoming competitor.
 
 Today, automotive ethernet is named as the future of in-vehicle networks.
@@ -207,7 +205,7 @@ However it has still not oust its competitors. Though in 2022 it is likely that
 there are more ethernet ports inside of vehicles than anywhere
 else~\cite{Ixia2014}. There are two major representatives of automotive ethernet
 networks which are Ethernet Audio/Video Bridging (AVB) and TTEthernet. Ethernet
-AVB works with over-provisioning and prioritisation while the FlexRay competitor
+AVB works with over-provisioning and prioritization while the FlexRay competitor
 TTEthernet is a time-triggered switched ethernet protocol utilizing TDMA\@.
 TTEthernet provides mixed-criticality temporal requirements. It describes three
 types of traffic streams with upper bounds on latency and jitter for two of the
@@ -235,14 +233,14 @@ elementary practice: Controller Authentication.
 
 Every valid controller sending messages in the IVN needs to be authenticated. So
 that it is possible to distinguish messages from unauthorized parties and to be
-able to process these separately or just discard them. For this to work, every
-valid controller holds a signed certificate which consists of a controller
-identifier, a public key and the authorizations for this controller. The
-responsible gateway possesses a list of trusted Original Equipment Manufacturers
-(OEMs) public keys. The certificates of the controllers are signed by the
-respective private keys of the OEMs. This way the gateway can decide which
-controller has which authorizations and only allow trusted OEM controllers to
-participate.
+able to process these separately or just discard them. A simple solution could
+be the following. Every valid controller holds a signed certificate which
+consists of a controller identifier, a public key and the authorizations for
+this controller. The responsible gateway possesses a list of trusted Original
+Equipment Manufacturers (OEMs) public keys. The certificates of the controllers
+are signed by the respective private keys of the OEMs. This way the gateway can
+decide which controller has which authorizations and only allow trusted OEM
+controllers to participate.
 
 \subsubsection{Encrypted Communication}
 
@@ -263,17 +261,32 @@ possibility is to grant all controllers of the subnet specific authorizations.
 
 \subsection{Automotive Open System Architecture and compliant CAN Authentication} 
 
-AUTomotive Open System ARchitecture (AUTOSAR) is a standard created by different
-vehicle manufacturers, suppliers, service providers and companies from the
-automotive electronics, semiconductor and software industry to overcome
-scalability and increasing development costs for ECUs. It specifies a software
-framework to standardize the ECU software. Since version 4.2 the specification
-includes security for CAN\@. It stipulates 128~bit keys and Message
-Authentication Codes (MACs) of a minimal length of 64~bit. They also specify to
-use counters or timestamps to provide freshness of the messages. The authentication mechanism needs to be \textit{backwards compatible} to standard CAN to not destroy legacy ECUs that do not need authentication because they are not safety critical.
+AUTOSAR is a standard created by different vehicle manufacturers, suppliers,
+service providers and companies from the automotive electronics, semiconductor
+and software industry to overcome scalability and increasing development costs
+for ECUs. It specifies a software framework to standardize the ECU software.
+Since version 4.2 the specification includes security for CAN\@. It stipulates
+128~bit keys and Message Authentication Codes (MACs) of a minimal length of
+64~bit. They also specify the use of counters or timestamps to provide freshness of
+the messages. The authentication mechanism needs to be \textit{backwards
+compatible} to standard CAN to not destroy legacy ECUs that do not need
+authentication because they are not safety critical.
 
 There are already multiple published CAN authentication protocols. But most of
-them fail to comply to the AUTOSAR specification. CANAuth~\cite{Herrewege2011} and LiBrA-CAN~\cite{Groza2012} are protocols designed for CAN+ and not CAN itself. They need new CAN transceivers and more powerful ECUs. MaCAN~\cite{Bruni2014} is an authentication protocol designed for CAN and does not need upgraded hardware. However, it splits the CAN payload into 4~byte data and 4~byte MAC\@. This change in the payload field hinders backward compatibility does not conform to a minimal length of 8~byte for the MAC. LCAP~\cite{Hazem2012} uses many of identifiers and only 2~byte MACs. 
+them fail to comply to the AUTOSAR specification. CANAuth~\cite{Herrewege2011}
+and LiBrA-CAN~\cite{Groza2012} are protocols designed for CAN+ and not CAN
+itself. They need new CAN transceivers and more powerful ECUs.
+MaCAN~\cite{Bruni2014} is an authentication protocol designed for CAN and does
+not need upgraded hardware. However, it splits the CAN payload into 4~byte data
+and 4~byte MAC\@. This change in the payload field hinders backward
+compatibility and does not conform to a minimal length of 8~byte for the MAC\@.
+LCAP~\cite{Hazem2012} uses many CAN identifiers and only 2~byte MACs. 
 
-To my best knowledge there are only three AUTOSAR-compliant protocols published at the moment: LeiA~\cite{Radu2016}, VatiCAN~\cite{Nurnberger2016} and VulCAN~\cite{VanBulck2017}. While LeiA and VatiCAN are pure software protocols which provide security against the impersonation of protocol participants, the VulCAN protocol enhances these two software protocols with additional system-level security guarantees to provide security against directly compromised ECUs.
+To my best knowledge there are only three AUTOSAR-compliant protocols published
+at the moment: LeiA~\cite{Radu2016}, vatiCAN~\cite{Nurnberger2016} and
+VulCAN~\cite{VanBulck2017}. While LeiA and vatiCAN are pure software protocols
+which provide security against the impersonation of protocol participants, the
+VulCAN protocol enhances these two software protocols with additional
+system-level security guarantees to provide security against directly
+compromised ECUs.
 
